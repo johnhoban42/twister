@@ -59,9 +59,9 @@ int _packet_lcs(unsigned long** seq1, unsigned long** seq2, int len1, int len2, 
 }
 
 int packet_lcs(unsigned long** seq1, unsigned long** seq2, int len1, int len2){
-    int cache[len1][len2];
-    for(int i = 0; i < len1; i++){
-        for(int j = 0; j < len2; j++){
+    int cache[len1+1][len2+1];
+    for(int i = 0; i < len1+1; i++){
+        for(int j = 0; j < len2+1; j++){
             cache[len1][len2] = -1;
         }
     }
