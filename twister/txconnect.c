@@ -21,7 +21,7 @@ udp_tx_conn* connect_udp_tx(){
       
     // clear servaddr
     memset(&(conn->servaddr), 0, sizeof((conn->servaddr)));
-    conn->servaddr.sin_addr.s_addr = htonl(0x7f000001);
+    conn->servaddr.sin_addr.s_addr = htonl(0x64400001);
     conn->servaddr.sin_port = htons(PORT);
     conn->servaddr.sin_family = AF_INET;
       
