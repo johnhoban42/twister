@@ -15,13 +15,13 @@
 Instantiate a UDP TX socket and wait to connect to RX.
 Largely adapted from example code found at https://www.geeksforgeeks.org/udp-client-server-using-connect-c-implementation/
 */
-udp_tx_conn* connect_udp_tx(){   
+udp_tx_conn* connect_udp_tx(long servaddr){   
 
     udp_tx_conn* conn = malloc(sizeof(udp_tx_conn));
       
     // clear servaddr
     memset(&(conn->servaddr), 0, sizeof((conn->servaddr)));
-    conn->servaddr.sin_addr.s_addr = htonl(0x64400001);
+    conn->servaddr.sin_addr.s_addr = htonl(servaddr);
     conn->servaddr.sin_port = htons(PORT);
     conn->servaddr.sin_family = AF_INET;
       
