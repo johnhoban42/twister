@@ -77,9 +77,24 @@ int run(int sl){
 
 int main(int argc, char** argv){
     int sequence_length = 1000;
-    if(argc >= 2){
-        sequence_length = atoi(argv[1]);
+    
+    int opt;
+    while((opt = getopt(argc, argv, ":l:")) != -1){
+        switch(opt){
+            case 'l':
+                sequence_length = atoi(optarg);
+                break;
+            case ':':
+                fprintf(stderr, "Option requires an argument.\n");
+                return 1;
+            case '?':
+                fprintf(stderr, "Unknown option -%c.\n", optopt);
+                return 1;
+            default:
+                abort();
+        }
     }
+
     run(sequence_length);
     return 0;
 }

@@ -67,10 +67,27 @@ int run(double rate, long servaddr){
 int main(int argc, char** argv){
     double rate = 10.0;
     long servaddr = 0x64400001;
-    if(argc >= 3){
-        rate = atof(argv[1]);
-        servaddr = strtol(argv[2], NULL, 16);
+
+    int opt;
+    while((opt = getopt(argc, argv, ":a:r:")) != -1){
+        switch(opt){
+            case 'a':
+                servaddr = strtol(optarg, NULL, 16);
+                break;
+            case 'r':
+                rate = atof(optarg);
+                break;
+            case ':':
+                fprintf(stderr, "Option requires an argument.\n");
+                return 1;
+            case '?':
+                fprintf(stderr, "Unknown option -%c.\n", optopt);
+                return 1;
+            default:
+                abort();
+        }
     }
+
     run(rate, servaddr);
     return 0;
 }
