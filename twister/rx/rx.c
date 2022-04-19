@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "../rx/rxconnect.h"
+#include "../rx/cli.h"
 #include "../mtwister/mtwister.h"
 #include "../utils/constants.h"
 #include "../utils/utils.h"
@@ -76,25 +77,8 @@ int run(int sl){
 }
 
 int main(int argc, char** argv){
-    int sequence_length = 1000;
-    
-    int opt;
-    while((opt = getopt(argc, argv, ":l:")) != -1){
-        switch(opt){
-            case 'l':
-                sequence_length = atoi(optarg);
-                break;
-            case ':':
-                fprintf(stderr, "Option requires an argument.\n");
-                return 1;
-            case '?':
-                fprintf(stderr, "Unknown option -%c.\n", optopt);
-                return 1;
-            default:
-                abort();
-        }
-    }
-
-    run(sequence_length);
+    rx_args args = DEFAULT_RX_ARGS;
+    parse_args(argc, argv, &args);
+    run(args.seq_length);
     return 0;
 }

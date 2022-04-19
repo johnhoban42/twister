@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <math.h>
 #include "../tx/txconnect.h"
+#include "../tx/cli.h"
 #include "../mtwister/mtwister.h"
 #include "../utils/constants.h"
 #include "../utils/utils.h"
@@ -65,29 +66,8 @@ int run(double rate, long servaddr){
 
 /* Execute run(), parametrizable by Mb/s and hex send address. */
 int main(int argc, char** argv){
-    double rate = 10.0;
-    long servaddr = 0x64400001;
-
-    int opt;
-    while((opt = getopt(argc, argv, ":a:r:")) != -1){
-        switch(opt){
-            case 'a':
-                servaddr = strtol(optarg, NULL, 16);
-                break;
-            case 'r':
-                rate = atof(optarg);
-                break;
-            case ':':
-                fprintf(stderr, "Option requires an argument.\n");
-                return 1;
-            case '?':
-                fprintf(stderr, "Unknown option -%c.\n", optopt);
-                return 1;
-            default:
-                abort();
-        }
-    }
-
-    run(rate, servaddr);
+    tx_args args = DEFAULT_TX_ARGS;
+    parse_args(argc, argv, &args);
+    run(args.rate, args.servaddr);
     return 0;
 }
