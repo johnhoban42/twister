@@ -11,7 +11,6 @@
 unsigned long* recv_datagram(udp_rx_conn* conn){
     char* msg = malloc(PACKET_SIZE);
     udp_recv(msg, PACKET_SIZE, conn);
-    printf("Received some data");
     return msg;
 }
 
@@ -27,7 +26,7 @@ int count_bit_errors(unsigned long* data, MTRand* mt){
 }
 
 /* Run the channel test. */
-int run(){
+int run(int sl){
 
     // Establish connection and random seed
     udp_rx_conn* conn = connect_udp_rx();
@@ -59,10 +58,9 @@ int run(){
         // Track RX data in intervals
         // Every 1000 packets, check for packet drops
         // If all packets have been received, then check for bit errors among them
-        int SEQUENCE_LENGTH = 2;
-        if(seq_length == SEQUENCE_LENGTH){
+        if(seq_length == sl){
             double dt = (double)(get_timestamp() - start) / 1000000;
-            int drops_in_seq = 2 - packet_lcs(data, mseq, SEQUENCE_LENGTH, SEQUENCE_LENGTH);
+            int drops_in_seq = sl - packet_lcs(data, mseq, sl, sl);
             pkt_drops += drops_in_seq;
             // Since we essentially "skipped" drops_in_seq packets from the Mersenne sequence,
             // generate that number of dummy payloads to offset the missing packets
@@ -70,14 +68,33 @@ int run(){
                 generate_payload(&mt);
             }
             seq_length = 0;
-            printf("Bytes Received: %d Total Errors: %d Time Elapsed: %.5f\n",
-                PACKET_SIZE * packets, pkt_drops, dt);
+            printf("Packets Received: %d Packet Drops Detected: %d Time Elapsed: %.5f\n",
+                packets, pkt_drops, dt);
         }
 
     }
 }
 
-int main(){
-    run();
+int main(int argc, char** argv){
+    int sequence_length = 1000;
+    
+    int opt;
+    while((opt = getopt(argc, argv, ":l:")) != -1){
+        switch(opt){
+            case 'l':
+                sequence_length = atoi(optarg);
+                break;
+            case ':':
+                fprintf(stderr, "Option requires an argument.\n");
+                return 1;
+            case '?':
+                fprintf(stderr, "Unknown option -%c.\n", optopt);
+                return 1;
+            default:
+                abort();
+        }
+    }
+
+    run(sequence_length);
     return 0;
 }

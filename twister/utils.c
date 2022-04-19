@@ -40,7 +40,7 @@ int max(int x, int y){
 }
 
 /* Return the longest common subsequence of two sequences of packets. */
-int _packet_lcs(unsigned long** seq1, unsigned long** seq2, int len1, int len2, int cache[len1][len2]){
+int _packet_lcs(unsigned long** seq1, unsigned long** seq2, int len1, int len2, int** cache){
     if(len1 == 0 || len2 == 0){
         return 0;
     }
@@ -59,10 +59,11 @@ int _packet_lcs(unsigned long** seq1, unsigned long** seq2, int len1, int len2, 
 }
 
 int packet_lcs(unsigned long** seq1, unsigned long** seq2, int len1, int len2){
-    int cache[len1][len2];
-    for(int i = 0; i < len1; i++){
-        for(int j = 0; j < len2; j++){
-            cache[len1][len2] = -1;
+    int** cache = malloc((len1+1)*sizeof(int*));
+    for(int i = 0; i < len1+1; i++){
+        cache[i] = malloc((len2+1)*sizeof(int));
+        for(int j = 0; j < len2+1; j++){
+            cache[i][j] = -1;
         }
     }
     int lcs = _packet_lcs(seq1, seq2, len1, len2, cache);

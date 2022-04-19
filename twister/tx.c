@@ -18,9 +18,9 @@ int send_burst(int n, udp_tx_conn* conn, MTRand* mt){
 }
 
 /* Run the channel test. Rate parameter controls send rate in packets per millisecond. */
-int run(double rate){
+int run(double rate, long servaddr){
     // Establish connection and random seed
-    udp_tx_conn* conn = connect_udp_tx();
+    udp_tx_conn* conn = connect_udp_tx(servaddr);
     MTRand mt = seedRand(TWISTER_SEED);
     
     long start = get_timestamp();
@@ -63,12 +63,31 @@ int run(double rate){
     disconnect_udp_tx(conn);
 }
 
-/* Execute run(), parametrizable by Mb/s. */
+/* Execute run(), parametrizable by Mb/s and hex send address. */
 int main(int argc, char** argv){
     double rate = 10.0;
-    if(argc >= 2){
-        rate = atof(argv[1]);
+    long servaddr = 0x64400001;
+
+    int opt;
+    while((opt = getopt(argc, argv, ":a:r:")) != -1){
+        switch(opt){
+            case 'a':
+                servaddr = strtol(optarg, NULL, 16);
+                break;
+            case 'r':
+                rate = atof(optarg);
+                break;
+            case ':':
+                fprintf(stderr, "Option requires an argument.\n");
+                return 1;
+            case '?':
+                fprintf(stderr, "Unknown option -%c.\n", optopt);
+                return 1;
+            default:
+                abort();
+        }
     }
-    run(rate);
+
+    run(rate, servaddr);
     return 0;
 }
