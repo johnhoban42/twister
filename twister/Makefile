@@ -1,26 +1,31 @@
-all: utils tx rx
+# Build directory
+BD = build
+
+all: tx rx
 
 # TX
 
-tx: tx.c txconnect.o utils.o mtwister.o
-	gcc -g txconnect.o utils.o mtwister.o tx.c -lm -o tx
+tx: utils tx/tx.c txconnect 
+	gcc -g $(BD)/txconnect.o $(BD)/utils.o $(BD)/mtwister.o tx/tx.c -lm -o $(BD)/tx
 
-txconnect.o: txconnect.c
-	gcc -g -c txconnect.c
+txconnect: tx/txconnect.c
+	gcc -g -c tx/txconnect.c -o $(BD)/txconnect.o
 
 # RX
 
-rx: rx.c rxconnect.o utils.o mtwister.o
-	gcc -g rxconnect.o utils.o mtwister.o rx.c -lm -o rx
+rx: utils rx/rx.c rxconnect
+	gcc -g $(BD)/rxconnect.o $(BD)/utils.o $(BD)/mtwister.o rx/rx.c -lm -o $(BD)/rx
 
-rxconnect.o: rxconnect.c
-	gcc -g -c rxconnect.c
+rxconnect: rx/rxconnect.c
+	gcc -g -c rx/rxconnect.c -o $(BD)/rxconnect.o
 
 # OTHERS
 
-utils: utils.c mtwister/mtwister.c
-	gcc -g -c utils.c
-	gcc -g -c mtwister/mtwister.c
+utils: utils/utils.c mtwister/mtwister.c
+	gcc -g -c utils/utils.c -o $(BD)/utils.o
+	gcc -g -c mtwister/mtwister.c -o $(BD)/mtwister.o
 
 clean:
-	rm -rf *.o tx rx
+	rm -rf build/*.o build/rx build/tx
+
+.PHONY: all clean

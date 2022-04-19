@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <math.h>
-#include "txconnect.h"
-#include "mtwister/mtwister.h"
-#include "constants.h"
-#include "utils.h"
+#include "../tx/txconnect.h"
+#include "../mtwister/mtwister.h"
+#include "../utils/constants.h"
+#include "../utils/utils.h"
 
 
 /* Send a burst of n packets containing random payloads. */

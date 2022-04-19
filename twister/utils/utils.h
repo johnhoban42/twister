@@ -1,5 +1,5 @@
 #include <strings.h>
-#include "mtwister/mtwister.h"
+#include "../mtwister/mtwister.h"
 
 long get_timestamp();
 unsigned long* generate_payload(MTRand* mt);

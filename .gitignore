@@ -53,7 +53,9 @@ dkms.conf
 
 # Twister executables
 tx
+!tx/
 rx
+!rx/
 
 # VSCode
 .vscode

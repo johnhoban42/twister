@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "rxconnect.h"
-#include "mtwister/mtwister.h"
-#include "constants.h"
-#include "utils.h"
+#include "../rx/rxconnect.h"
+#include "../mtwister/mtwister.h"
+#include "../utils/constants.h"
+#include "../utils/utils.h"
 
 
 /* Receive a single datagram. Each should be a random sequence of unsigned longs. */
