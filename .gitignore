@@ -51,11 +51,15 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
-# Twister executables
+# Twister executables and outputs
 tx
 !tx/
 rx
 !rx/
+trace
+!trace/
+*.txt
+!build.txt
 
 # VSCode
 .vscode

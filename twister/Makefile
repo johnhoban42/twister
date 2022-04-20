@@ -3,7 +3,11 @@ BD = build
 CC = gcc -g
 CCO = gcc -g -c
 
-all: tx rx
+# PRIMARY OPTIONS - make (all), make twister, make trace
+
+all: trace twister
+
+twister: tx rx
 
 # TX
 
@@ -26,6 +30,14 @@ rxconnect: rx/rxconnect.c
 
 rxcli: rx/cli.c
 	$(CCO) rx/cli.c -o $(BD)/rxcli.o
+
+# TRACE
+
+trace: utils trace/trace.c tracecli
+	$(CC) $(BD)/mtwister.o $(BD)/utils.o $(BD)/tracecli.o trace/trace.c -o $(BD)/trace
+
+tracecli: trace/cli.c
+	$(CCO) trace/cli.c -o $(BD)/tracecli.o
 
 # OTHERS
 
