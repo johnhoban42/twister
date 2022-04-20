@@ -19,9 +19,11 @@ int send_burst(int n, udp_tx_conn* conn, MTRand* mt){
 }
 
 /* Run the channel test. Rate parameter controls send rate in packets per millisecond. */
-int run(double rate, long servaddr){
+int run(tx_args args){
     // Establish connection and random seed
-    udp_tx_conn* conn = connect_udp_tx(servaddr);
+    printf("Creating socket binding for RX...\n");
+    udp_tx_conn* conn = connect_udp_tx(args.servaddr);
+    printf("Transmitting data to RX...\n");
     MTRand mt = seedRand(TWISTER_SEED);
     
     long start = get_timestamp();
@@ -30,7 +32,7 @@ int run(double rate, long servaddr){
 
     // 1 Mb/s = 125/PACKET_SIZE pkt/ms
     // For PACKET_SIZE = 1600 B, 1 Mb/s = 0.078125 pkt/ms
-    double pkt_rate = rate * 125.0 / PACKET_SIZE;
+    double pkt_rate = args.rate * 125.0 / PACKET_SIZE;
     
     // Control send rate in bursts - send approx "rate" packets every millisecond
 
@@ -68,6 +70,6 @@ int run(double rate, long servaddr){
 int main(int argc, char** argv){
     tx_args args = DEFAULT_TX_ARGS;
     parse_args(argc, argv, &args);
-    run(args.rate, args.servaddr);
+    run(args);
     return 0;
 }

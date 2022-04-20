@@ -32,7 +32,7 @@ int count_bit_errors(unsigned long* data, MTRand* mt){
 /* Report RX metrics after termination. */
 void report_metrics(){
     int total_packets = rxm.pkt_received + rxm.pkt_drops;
-    float pct_received = 100 * rxm.pkt_received / total_packets;
+    float pct_received = 100 * (float)rxm.pkt_received / total_packets;
     float receive_rate = rxm.pkt_received * PACKET_SIZE / (125000 * rxm.time_elapsed);
     float send_rate = total_packets * PACKET_SIZE / (125000 * rxm.time_elapsed);
 
@@ -53,13 +53,15 @@ void report_metrics(){
 }
 
 /* Run the channel test. */
-int run(int sl){
+int run(rx_args args){
 
     // Establish connection and random seed
+    printf("Waiting for TX client...\n");
     udp_rx_conn* conn = connect_udp_rx();
     MTRand mt = seedRand(TWISTER_SEED);
 
     // Receive packets and measure receive rate and bit errors
+    int sl = args.seq_length;
     unsigned long** data = calloc(sl, PACKET_SIZE);
     unsigned long** mseq = calloc(sl, PACKET_SIZE);
     int seq_length = 0;
@@ -75,6 +77,7 @@ int run(int sl){
 
         // Start timing upon receiving the first packet
         if(rxm.pkt_received == 0){
+            printf("Receiving data from TX...\n");
             start = get_timestamp();
         }
         rxm.pkt_received++;
@@ -92,8 +95,10 @@ int run(int sl){
                 generate_payload(&mt);
             }
             seq_length = 0;
-            printf("Packets Received: %d Packet Drops Detected: %d Time Elapsed: %.5f\n",
-                rxm.pkt_received, rxm.pkt_drops, rxm.time_elapsed);
+            if(args.verbose){
+                printf("Packets Received: %d\t\tPacket Drops Detected: %d\t\time Elapsed: %.5f\n",
+                    rxm.pkt_received, rxm.pkt_drops, rxm.time_elapsed);
+            }
         }
 
     }
@@ -103,6 +108,6 @@ int main(int argc, char** argv){
     rx_args args = DEFAULT_RX_ARGS;
     parse_args(argc, argv, &args);
     signal(SIGINT, report_metrics);
-    run(args.seq_length);
+    run(args);
     return 0;
 }
