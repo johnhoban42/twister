@@ -8,8 +8,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include "constants.h"
-#include "txconnect.h"
+#include "../utils/constants.h"
+#include "../tx/txconnect.h"
    
 /*
 Instantiate a UDP TX socket and wait to connect to RX.

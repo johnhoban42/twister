@@ -4,8 +4,8 @@
 #include <string.h>
 #include <strings.h>
 #include <unistd.h>
-#include "mtwister/mtwister.h"
-#include "constants.h"
+#include "../mtwister/mtwister.h"
+#include "../utils/constants.h"
 
 /* Get a timestamp of "now", in microseconds. */
 long get_timestamp(){

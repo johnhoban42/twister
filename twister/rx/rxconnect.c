@@ -7,8 +7,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include "constants.h"
-#include "rxconnect.h"
+#include "../utils/constants.h"
+#include "../rx/rxconnect.h"
 
 udp_rx_conn* connect_udp_rx(){   
     

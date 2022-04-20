@@ -1,26 +1,39 @@
-all: utils tx rx
+# Macros
+BD = build
+CC = gcc -g
+CCO = gcc -g -c
+
+all: tx rx
 
 # TX
 
-tx: tx.c txconnect.o utils.o mtwister.o
-	gcc -g txconnect.o utils.o mtwister.o tx.c -lm -o tx
+tx: utils tx/tx.c txconnect txcli
+	$(CC) $(BD)/txconnect.o $(BD)/utils.o $(BD)/mtwister.o $(BD)/txcli.o tx/tx.c -lm -o $(BD)/tx
 
-txconnect.o: txconnect.c
-	gcc -g -c txconnect.c
+txconnect: tx/txconnect.c
+	$(CCO) tx/txconnect.c -o $(BD)/txconnect.o
+
+txcli: tx/cli.c
+	$(CCO) tx/cli.c -o $(BD)/txcli.o
 
 # RX
 
-rx: rx.c rxconnect.o utils.o mtwister.o
-	gcc -g rxconnect.o utils.o mtwister.o rx.c -lm -o rx
+rx: utils rx/rx.c rxconnect rxcli
+	$(CC) $(BD)/rxconnect.o $(BD)/utils.o $(BD)/mtwister.o $(BD)/rxcli.o rx/rx.c -lm -o $(BD)/rx
 
-rxconnect.o: rxconnect.c
-	gcc -g -c rxconnect.c
+rxconnect: rx/rxconnect.c
+	$(CCO) rx/rxconnect.c -o $(BD)/rxconnect.o
+
+rxcli: rx/cli.c
+	$(CCO) rx/cli.c -o $(BD)/rxcli.o
 
 # OTHERS
 
-utils: utils.c mtwister/mtwister.c
-	gcc -g -c utils.c
-	gcc -g -c mtwister/mtwister.c
+utils: utils/utils.c mtwister/mtwister.c
+	$(CCO) utils/utils.c -o $(BD)/utils.o
+	$(CCO) mtwister/mtwister.c -o $(BD)/mtwister.o
 
 clean:
-	rm -rf *.o tx rx
+	rm -rf build/*.o build/rx build/tx
+
+.PHONY: all clean
