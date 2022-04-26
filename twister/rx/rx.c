@@ -1,6 +1,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include "../rx/rxconnect.h"
 #include "../rx/cli.h"
@@ -64,15 +65,19 @@ int run(rx_args args){
     int sl = args.seq_length;
     unsigned long** data = calloc(sl, PACKET_SIZE);
     unsigned long** mseq = calloc(sl, PACKET_SIZE);
+    char* trace = calloc(sl, sizeof(char));
     int seq_length = 0;
     int bit_errors = 0;
+    int payloads=0;
     long start;
 
     while(1){
 
         // Receive packet data and generate comparison sequence
-        data[seq_length] = recv_datagram(conn);
-        mseq[seq_length] = generate_payload(&mt);
+        unsigned long* tx = recv_datagram(conn);
+        unsigned long* rx = generate_payload(&mt);
+        payloads++;
+        //printf("Payload %d\n", payloads);
         seq_length++;
 
         // Start timing upon receiving the first packet
@@ -81,24 +86,18 @@ int run(rx_args args){
             start = get_timestamp();
         }
         rxm.pkt_received++;
+        rxm.time_elapsed = (double)(get_timestamp() - start) / 1000000;
 
-        // Track RX data in intervals
-        // Every 1000 packets, check for packet drops
-        // If all packets have been received, then check for bit errors among them
-        if(seq_length == sl){
-            rxm.time_elapsed = (double)(get_timestamp() - start) / 1000000;
-            int drops_in_seq = sl - packet_lcs(data, mseq, sl, sl);
-            rxm.pkt_drops += drops_in_seq;
-            // Since we essentially "skipped" drops_in_seq packets from the Mersenne sequence,
-            // generate that number of dummy payloads to offset the missing packets
-            for(int i = 0; i < drops_in_seq; i++){
-                generate_payload(&mt);
-            }
-            seq_length = 0;
-            if(args.verbose){
-                printf("Packets Received: %d\t\tPacket Drops Detected: %d\t\time Elapsed: %.5f\n",
-                    rxm.pkt_received, rxm.pkt_drops, rxm.time_elapsed);
-            }
+        while(memcmp(tx, rx, PACKET_SIZE) != 0){
+            rxm.pkt_drops++;
+            rx = generate_payload(&mt);
+            // printf("1");
+        }
+        // printf("0");
+
+        if(args.verbose && rxm.pkt_received % sl == 0){
+            printf("Packets Received: %d\t\tPacket Drops Detected: %d\t\time Elapsed: %.5f\n",
+                rxm.pkt_received, rxm.pkt_drops, rxm.time_elapsed);
         }
 
     }
