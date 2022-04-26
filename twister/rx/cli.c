@@ -8,8 +8,9 @@ static char doc[] = "Receive data over a UDP connection and generate connection 
 
 /* Command line options */
 static struct argp_option opts[] = {
-    {"seq-length",      'l', "<int>",   0, "Number of packets received before verifying data via LCS. Default is 1000.",     0},
-    {"verbose",         'v', 0,         0, "Enable verbose output.",                                                         0},
+    {"seq-length",      'l', "<int>",       0, "Number of packets received before printing an update with -v. Default is 1000.",    0},
+    {"out",             'o', "<filename>",  0, "Output filename. Default is './out.txt'.",                                          0},
+    {"verbose",         'v', 0,             0, "Enable verbose output.",                                                            0},
     {0}
 };
 
@@ -23,6 +24,8 @@ static error_t parse_opt(int key, char* arg, struct argp_state* state){
         case 'l':
             args->seq_length = atoi(arg);
             break;
+        case 'o':
+            args->out = arg;
         case 'v':
             args->verbose = true;
             break;

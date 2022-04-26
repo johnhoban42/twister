@@ -14,10 +14,11 @@ int run(trace_args args){
         fprintf(stderr, "Unable to write to file %s\n", args.out);
         return 1;
     }
+    printf("Writing packet trace to file '%s'...\n", args.out);
 
     // Generate the trace. 0 -> transmit, 1 -> drop
     while(args.length > 0){
-        char c = genRand(&mt) < 1.0 / args.rate ? '1' : '0';
+        char c = genRand(&mt) < 1.0 / args.rate ? PKT_DROP : PKT_RECV;
         fputc(c, f);
         args.length--;
     }

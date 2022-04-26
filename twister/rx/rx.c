@@ -61,28 +61,29 @@ int run(rx_args args){
     udp_rx_conn* conn = connect_udp_rx();
     MTRand mt = seedRand(TWISTER_SEED);
 
-    // Receive packets and measure receive rate and bit errors
+    // Prepare output file
+    FILE* f = fopen(args.out, "w");
+    if(f == NULL){
+        fprintf(stderr, "Unable to write to file %s\n", args.out);
+        return 1;
+    }
+
+    // Metrics
     int sl = args.seq_length;
-    unsigned long** data = calloc(sl, PACKET_SIZE);
-    unsigned long** mseq = calloc(sl, PACKET_SIZE);
-    char* trace = calloc(sl, sizeof(char));
-    int seq_length = 0;
-    int bit_errors = 0;
-    int payloads=0;
     long start;
+    unsigned long* tx = calloc(BLOCKS_PER_PACKET, sizeof(unsigned long));
+    unsigned long* rx = calloc(BLOCKS_PER_PACKET, sizeof(unsigned long));
 
     while(1){
 
         // Receive packet data and generate comparison sequence
-        unsigned long* tx = recv_datagram(conn);
-        unsigned long* rx = generate_payload(&mt);
-        payloads++;
-        //printf("Payload %d\n", payloads);
-        seq_length++;
+        tx = recv_datagram(conn);
+        rx = generate_payload(&mt);
 
         // Start timing upon receiving the first packet
         if(rxm.pkt_received == 0){
             printf("Receiving data from TX...\n");
+            printf("Writing packet trace to file '%s'...\n", args.out);
             start = get_timestamp();
         }
         rxm.pkt_received++;
@@ -91,9 +92,9 @@ int run(rx_args args){
         while(memcmp(tx, rx, PACKET_SIZE) != 0){
             rxm.pkt_drops++;
             rx = generate_payload(&mt);
-            // printf("1");
+            fputc(PKT_DROP, f);
         }
-        // printf("0");
+        fputc(PKT_RECV, f);
 
         if(args.verbose && rxm.pkt_received % sl == 0){
             printf("Packets Received: %d\t\tPacket Drops Detected: %d\t\time Elapsed: %.5f\n",
