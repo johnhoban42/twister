@@ -58,7 +58,7 @@ int run(rx_args args){
 
     // Establish connection and random seed
     printf("Waiting for TX client...\n");
-    udp_rx_conn* conn = connect_udp_rx();
+    udp_rx_conn* conn = connect_udp_rx(args.port);
     MTRand mt = seedRand(TWISTER_SEED);
 
     // Prepare output file
@@ -97,7 +97,7 @@ int run(rx_args args){
         fputc(PKT_RECV, f);
 
         if(args.verbose && rxm.pkt_received % sl == 0){
-            printf("Packets Received: %d\t\tPacket Drops Detected: %d\t\time Elapsed: %.5f\n",
+            printf("Packets Received: %d\t\tPacket Drops Detected: %d\t\tTime Elapsed: %.5f\n",
                 rxm.pkt_received, rxm.pkt_drops, rxm.time_elapsed);
         }
 

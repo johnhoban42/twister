@@ -9,6 +9,7 @@ static char doc[] = "Transmit pseudorandom test data at a fixed rate over a UDP 
 /* Command line options */
 static struct argp_option opts[] = {
     {"address",     'a', "<address>",   0, "Server address in hex format. Default is 0x64400001 (127.0.0.1).",  0},
+    {"port",        'p', "<port>",      0, "Transmit to RX via this port. Default is 7777.",                    0},
     {"rate",        'r', "<float>",     0, "Packet transmission rate in Mb/s. Default is 10.0.",                0},
     {0}
 };
@@ -22,6 +23,9 @@ static error_t parse_opt(int key, char* arg, struct argp_state* state){
     switch(key){
         case 'a':
             args->servaddr = strtol(arg, NULL, 16);
+            break;
+        case 'p':
+            args->port = atoi(arg);
             break;
         case 'r':
             args->rate = atof(arg);

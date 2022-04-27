@@ -6,6 +6,6 @@ typedef struct udp_tx_conn{
     struct sockaddr_in servaddr;
 } udp_tx_conn;
 
-udp_tx_conn* connect_udp_tx(long servaddr);
+udp_tx_conn* connect_udp_tx(long servaddr, int port);
 int udp_send(void* msg, int msglen, udp_tx_conn* conn);
 int disconnect_udp_tx(udp_tx_conn* conn);
