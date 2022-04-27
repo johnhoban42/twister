@@ -10,7 +10,7 @@
 #include "../utils/constants.h"
 #include "../rx/rxconnect.h"
 
-udp_rx_conn* connect_udp_rx(){   
+udp_rx_conn* connect_udp_rx(int port){   
     
     udp_rx_conn* conn = malloc(sizeof(udp_rx_conn));
 
@@ -20,7 +20,7 @@ udp_rx_conn* connect_udp_rx(){
     // Create a UDP Socket
     conn->socket = socket(AF_INET, SOCK_DGRAM, 0);        
     conn->servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    conn->servaddr.sin_port = htons(PORT);
+    conn->servaddr.sin_port = htons(port);
     conn->servaddr.sin_family = AF_INET; 
    
     // bind server address to socket descriptor

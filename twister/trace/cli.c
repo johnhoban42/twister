@@ -1,16 +1,16 @@
 #include <argp.h>
 #include <stdlib.h>
-#include "../tx/cli.h"
+#include "../trace/cli.h"
 
 
 /* Program description */
-static char doc[] = "Transmit pseudorandom test data at a fixed rate over a UDP connection.";
+static char doc[] = "Generate a randomized transmit/drop trace for mahimahi.";
 
 /* Command line options */
 static struct argp_option opts[] = {
-    {"address",     'a', "<address>",   0, "Server address in hex format. Default is 0x64400001 (127.0.0.1).",  0},
-    {"port",        'p', "<port>",      0, "Transmit to RX via this port. Default is 7777.",                    0},
-    {"rate",        'r', "<float>",     0, "Packet transmission rate in Mb/s. Default is 10.0.",                0},
+    {"length",          'l', "<long>",      0, "Trace length. Default is 100,000.",                         0},
+    {"out",             'o', "<filename>",  0, "Output filename. Default is './trace.txt'.",                    0},
+    {"rate",            'r', "<int>",       0, "Drop 1/r packets nondeterministically. Default is 10.",     0},
     {0}
 };
 
@@ -18,17 +18,17 @@ static struct argp_option opts[] = {
 static error_t parse_opt(int key, char* arg, struct argp_state* state){
 
     error_t status = 0;
-    tx_args* args = (tx_args*)state->input;
+    trace_args* args = (trace_args*)state->input;
 
     switch(key){
-        case 'a':
-            args->servaddr = strtol(arg, NULL, 16);
+        case 'l':
+            args->length = atol(arg);
             break;
-        case 'p':
-            args->port = atoi(arg);
+        case 'o':
+            args->out = arg;
             break;
         case 'r':
-            args->rate = atof(arg);
+            args->rate = atoi(arg);
             break;
         default:
             status = ARGP_ERR_UNKNOWN;
@@ -50,6 +50,6 @@ static struct argp argparser = {
 };
 
 /* Wrapper to parse all command line arguments. */
-int parse_args(int argc, char** argv, tx_args* out){
+int parse_args(int argc, char** argv, trace_args* out){
     return argp_parse(&argparser, argc, argv, 0, 0, out);
 }

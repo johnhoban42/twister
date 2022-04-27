@@ -22,7 +22,7 @@ int send_burst(int n, udp_tx_conn* conn, MTRand* mt){
 int run(tx_args args){
     // Establish connection and random seed
     printf("Creating socket binding for RX...\n");
-    udp_tx_conn* conn = connect_udp_tx(args.servaddr);
+    udp_tx_conn* conn = connect_udp_tx(args.servaddr, args.port);
     printf("Transmitting data to RX...\n");
     MTRand mt = seedRand(TWISTER_SEED);
     
