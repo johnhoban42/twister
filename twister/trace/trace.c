@@ -18,8 +18,8 @@ int run(trace_args args){
 
     // Generate the trace. 0 -> transmit, 1 -> drop
     while(args.length > 0){
-        char c = genRand(&mt) < 1.0 / args.rate ? PKT_DROP : PKT_RECV;
-        fputc(c, f);
+        char* flag = genRand(&mt) < 1.0 / args.rate ? PKT_DROP : PKT_RECV;
+        fputs(flag, f);
         args.length--;
     }
     fclose(f);
