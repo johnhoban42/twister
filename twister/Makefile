@@ -48,4 +48,4 @@ utils: utils/utils.c mtwister/mtwister.c
 clean:
 	rm -rf build/*.o build/rx build/tx
 
-.PHONY: all clean
+.PHONY: all clean utils

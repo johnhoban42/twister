@@ -92,9 +92,9 @@ int run(rx_args args){
         while(memcmp(tx, rx, PACKET_SIZE) != 0){
             rxm.pkt_drops++;
             rx = generate_payload(&mt);
-            fputc(PKT_DROP, f);
+            fputs(PKT_DROP, f);
         }
-        fputc(PKT_RECV, f);
+        fputs(PKT_RECV, f);
 
         if(args.verbose && rxm.pkt_received % sl == 0){
             printf("Packets Received: %d\t\tPacket Drops Detected: %d\t\tTime Elapsed: %.5f\n",

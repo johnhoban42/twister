@@ -9,7 +9,7 @@
 #define BLOCKS_PER_PACKET PACKET_SIZE/sizeof(unsigned long)
 
 /* Trace constants */
-#define PKT_RECV '0'
-#define PKT_DROP '1'
+#define PKT_RECV "0\n"
+#define PKT_DROP "1\n"
 
 #endif
