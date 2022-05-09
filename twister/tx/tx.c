@@ -41,7 +41,7 @@ int run(tx_args args){
     send_burst(first_burst_size / 2, conn, &mt);
     int packets = first_burst_size;
 
-    for(int i = 0; i < 100000; i++){
+    while(1){
         long t1 = get_timestamp();
         int sleep_time = 500 - send_time_elapsed > 0 ? 500 - send_time_elapsed : 0;
         usleep(sleep_time);

@@ -8,9 +8,10 @@ static char doc[] = "Generate a randomized transmit/drop trace for mahimahi.";
 
 /* Command line options */
 static struct argp_option opts[] = {
-    {"length",          'l', "<long>",      0, "Trace length. Default is 100,000.",                         0},
-    {"out",             'o', "<filename>",  0, "Output filename. Default is './trace.txt'.",                    0},
-    {"rate",            'r', "<int>",       0, "Drop 1/r packets nondeterministically. Default is 10.",     0},
+    {"length",          'l', "<long>",      0, "Trace length. Default is 100,000.",                                     0},
+    {"out",             'o', "<filename>",  0, "Output filename. Default is './trace.txt'.",                            0},
+    {"rate",            'r', "<int>",       0, "Drop 1/r packets nondeterministically. Default is 10.",                 0},
+    {"seed",            's', "<long>",      0, "Random seed to generate the trace. Must be 32-bit int in hex (0x...)",  0},
     {0}
 };
 
@@ -29,6 +30,9 @@ static error_t parse_opt(int key, char* arg, struct argp_state* state){
             break;
         case 'r':
             args->rate = atoi(arg);
+            break;
+        case 's':
+            args->seed = strtol(arg, NULL, 16);
             break;
         default:
             status = ARGP_ERR_UNKNOWN;
