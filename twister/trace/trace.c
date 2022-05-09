@@ -6,7 +6,7 @@
 
 int run(trace_args args){
     // Randomize
-    MTRand mt = seedRand(TWISTER_SEED);
+    MTRand mt = seedRand(args.seed);
 
     // Prepare output file
     FILE* f = fopen(args.out, "w");
